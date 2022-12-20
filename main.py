@@ -15,13 +15,16 @@ def buildMainDf():
     df_base_cols = ["uid", "lastName", "sdnType"]
     rows = []
 
-    for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
-        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
-        lastName = actor.find('{http://tempuri.org/sdnList.xsd}lastName').text if actor is not None else None
-        sdnType = actor.find('{http://tempuri.org/sdnList.xsd}sdnType').text if actor is not None else None
+    for child in root:
+        for child in child:
+            print(child.tag)
 
-        rows.append({"uid": uid, "lastName": lastName, "sdnType": sdnType})
+    # for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
+    #     uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
+    #     lastName = actor.find('{http://tempuri.org/sdnList.xsd}lastName').text if actor is not None else None
+    #     sdnType = actor.find('{http://tempuri.org/sdnList.xsd}sdnType').text if actor is not None else None
 
+    #     rows.append({"uid": uid, "lastName": lastName, "sdnType": sdnType})
     
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     return (print (df_base))
@@ -29,7 +32,7 @@ def buildMainDf():
 def buildProgramList():
     tree = et.parse("resources/sdnOfac.xml")
     root = tree.getroot()
-    #building main df
+ 
     df_base_cols = ["uid", "program"]
     rows = []
 
@@ -57,5 +60,5 @@ def loadXML():
     with open('resources/sdnOfac.xml', 'wb') as f:
         f.write(resp.content)
 
-buildProgramList()
+#buildProgramList()
 buildMainDf()
