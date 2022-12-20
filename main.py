@@ -19,15 +19,15 @@ def buildMainDf():
         for child in child:
             print(child.tag)
 
-    # for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
-    #     uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
-    #     lastName = actor.find('{http://tempuri.org/sdnList.xsd}lastName').text if actor is not None else None
-    #     sdnType = actor.find('{http://tempuri.org/sdnList.xsd}sdnType').text if actor is not None else None
+    for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
+        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
+        lastName = actor.find('{http://tempuri.org/sdnList.xsd}lastName').text if actor is not None else None
+        sdnType = actor.find('{http://tempuri.org/sdnList.xsd}sdnType').text if actor is not None else None
 
-    #     rows.append({"uid": uid, "lastName": lastName, "sdnType": sdnType})
+        rows.append({"uid": uid, "lastName": lastName, "sdnType": sdnType})
     
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    return (print (df_base))
+    return (df_base)
 
 def buildProgramList():
     tree = et.parse("resources/sdnOfac.xml")
@@ -37,19 +37,16 @@ def buildProgramList():
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
-        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
-        
-        for uid in root.findall('{http://www.w3.org/2001/XMLSchema-instance}programList'):
-            print('entrei')
-            program = actor.find('{http://www.w3.org/2001/XMLSchema-instance}program').text if actor is not None else None
 
-            print(program)
-            print('oi')
+        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
+
+        for actor in actor.findall('{http://tempuri.org/sdnList.xsd}programList'):
+            program = actor.find('{http://tempuri.org/sdnList.xsd}program').text if actor is not None else None
             rows.append({"uid": uid, "program": program})
-    print(uid)
+
     
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    # return(print(df_base))
+    return(df_base)
     
 
 def loadXML():
@@ -60,5 +57,5 @@ def loadXML():
     with open('resources/sdnOfac.xml', 'wb') as f:
         f.write(resp.content)
 
-#buildProgramList()
-buildMainDf()
+buildProgramList()
+# buildMainDf()
