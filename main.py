@@ -1,22 +1,54 @@
 import xml.etree.ElementTree as et 
 import requests
+import pandas as pd
 
+def parseXml():
+    tree = et.parse("resources/sdnOfac.xml")
+    root = tree.getroot()
+    return root
 
-# def parseXml():
+#building main df
+def buildMainDf():
+    tree = et.parse("resources/sdnOfac.xml")
+    root = tree.getroot()
+ 
+    df_base_cols = ["uid", "lastName", "sdnType"]
+    rows = []
 
-#     tree = et.parse("resources/sdn_advanced.xml")
-#     root = tree.getroot()
-#     rows = []
+    for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
+        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
+        lastName = actor.find('{http://tempuri.org/sdnList.xsd}lastName').text if actor is not None else None
+        sdnType = actor.find('{http://tempuri.org/sdnList.xsd}sdnType').text if actor is not None else None
 
-#     for child in root:
-#         print(child.tag, child.attrib)
+        rows.append({"uid": uid, "lastName": lastName, "sdnType": sdnType})
 
-#     for ReferenceValueSets in root.iter('AliasTypeValues'):
-#         print(ReferenceValueSets.attrib)   
+    
+    df_base = pd.DataFrame(rows, columns = df_base_cols)
+    return (print (df_base))
 
-#     for alias in root.findall("./ReferenceValueSets"):
-#         print(alias.attrib)
+def buildProgramList():
+    tree = et.parse("resources/sdnOfac.xml")
+    root = tree.getroot()
+    #building main df
+    df_base_cols = ["uid", "program"]
+    rows = []
+
+    for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
+        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
         
+        for uid in root.findall('{http://www.w3.org/2001/XMLSchema-instance}programList'):
+            print('entrei')
+            program = actor.find('{http://www.w3.org/2001/XMLSchema-instance}program').text if actor is not None else None
+
+            print(program)
+            print('oi')
+            rows.append({"uid": uid, "program": program})
+    print(uid)
+    
+    df_base = pd.DataFrame(rows, columns = df_base_cols)
+    # return(print(df_base))
+    
+
 def loadXML():
 
     url = 'https://www.treasury.gov/ofac/downloads/sdn.xml'
@@ -25,5 +57,5 @@ def loadXML():
     with open('resources/sdnOfac.xml', 'wb') as f:
         f.write(resp.content)
 
-# parseXml()
-loadXML()
+buildProgramList()
+buildMainDf()
