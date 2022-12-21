@@ -57,19 +57,24 @@ def buildProgramList():
 def buildAkaList():
     root = parseXml()
  
-    df_base_cols = ["uid", "type", "category", "lastName"]
+    df_base_cols = ["uid", "akaUid","type", "category", "lastName"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
 
         uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
 
-        for actor in actor.findall('{http://tempuri.org/sdnList.xsd}programList'):
-            program = actor.find('{http://tempuri.org/sdnList.xsd}program').text if actor is not None else None
-            rows.append({"uid": uid, "program": program})   #NEED TO ADJUST THE COLS
+        for actor in actor.findall('{http://tempuri.org/sdnList.xsd}akaList'):
+            for aka in actor.findall('{http://tempuri.org/sdnList.xsd}aka'):
+                akaUid = aka.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
+                type = aka.find('{http://tempuri.org/sdnList.xsd}type').text if actor is not None else None
+                category = aka.find('{http://tempuri.org/sdnList.xsd}category').text if actor is not None else None
+                lastName = aka.find('{http://tempuri.org/sdnList.xsd}lastName').text if actor is not None else None
 
+
+                rows.append({"uid": uid, "akaUid": akaUid, "type": type, "category": category, "lastName": lastName})   
     
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    return(print(df_base))
+    return(df_base)
 
 buildAkaList()
