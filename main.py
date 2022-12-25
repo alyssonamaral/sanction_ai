@@ -26,9 +26,9 @@ def buildMainDf():
             print(child.tag)
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
-        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
-        lastName = actor.find('{http://tempuri.org/sdnList.xsd}lastName').text if actor is not None else None
-        sdnType = actor.find('{http://tempuri.org/sdnList.xsd}sdnType').text if actor is not None else None
+        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor.find('{http://tempuri.org/sdnList.xsd}uid') is not None else None
+        lastName = actor.find('{http://tempuri.org/sdnList.xsd}lastName').text if actor.find('{http://tempuri.org/sdnList.xsd}lastName') is not None else None
+        sdnType = actor.find('{http://tempuri.org/sdnList.xsd}sdnType').text if actor.find('{http://tempuri.org/sdnList.xsd}sdnType') is not None else None
 
         rows.append({"uid": uid, "lastName": lastName, "sdnType": sdnType})
     
@@ -43,10 +43,10 @@ def buildProgramList():
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
 
-        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
+        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor.find('{http://tempuri.org/sdnList.xsd}uid') is not None else None
 
         for actor in actor.findall('{http://tempuri.org/sdnList.xsd}programList'):
-            program = actor.find('{http://tempuri.org/sdnList.xsd}program').text if actor is not None else None
+            program = actor.find('{http://tempuri.org/sdnList.xsd}program').text if actor.find('{http://tempuri.org/sdnList.xsd}program') is not None else None
             rows.append({"uid": uid, "program": program})
    
     df_base = pd.DataFrame(rows, columns = df_base_cols)
@@ -60,12 +60,12 @@ def buildAkaList():
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
 
-        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor is not None else None
+        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor.find('{http://tempuri.org/sdnList.xsd}uid') is not None else None
 
         for actor in actor.findall('{http://tempuri.org/sdnList.xsd}akaList'):
             for aka in actor.findall('{http://tempuri.org/sdnList.xsd}aka'):
-                akaUid = aka.find('{http://tempuri.org/sdnList.xsd}uid').text if aka is not None else None
-                type = aka.find('{http://tempuri.org/sdnList.xsd}type').text if aka is not None else None
+                akaUid = aka.find('{http://tempuri.org/sdnList.xsd}uid').text if aka.find('{http://tempuri.org/sdnList.xsd}uid') is not None else None
+                type = aka.find('{http://tempuri.org/sdnList.xsd}type').text if aka.find('{http://tempuri.org/sdnList.xsd}type') is not None else None
                 category = aka.find('{http://tempuri.org/sdnList.xsd}category').text if aka.find('{http://tempuri.org/sdnList.xsd}category') is not None else None
                 lastName = aka.find('{http://tempuri.org/sdnList.xsd}lastName').text if aka.find('{http://tempuri.org/sdnList.xsd}lastName') is not None else None
 
@@ -77,7 +77,7 @@ def buildAkaList():
 def buildAddressList():
     root = parseXml()
  
-    df_base_cols = ["uid", "addressUid", "city", "country", "address1", "address2", "address3", "postalCode"]
+    df_base_cols = ["uid", "addressUid", "city", "country", "address1", "address2", "address3", "postalCode", "stateOrProvince"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
@@ -93,10 +93,36 @@ def buildAddressList():
                 address2 = address.find('{http://tempuri.org/sdnList.xsd}address2').text if address.find('{http://tempuri.org/sdnList.xsd}address2') is not None else None
                 address3 = address.find('{http://tempuri.org/sdnList.xsd}address3').text if address.find('{http://tempuri.org/sdnList.xsd}address3') is not None else None
                 postalCode = address.find('{http://tempuri.org/sdnList.xsd}postalCode').text if address.find('{http://tempuri.org/sdnList.xsd}postalCode') is not None else None
+                stateOrProvince = address.find('{http://tempuri.org/sdnList.xsd}stateOrProvince').text if address.find('{http://tempuri.org/sdnList.xsd}stateOrProvince') is not None else None
 
-                rows.append({"uid": uid, "addressUid": addressUid, "city": city, "country": country, "address1": address1, "address2": address2, "address3": address3, "postalCode": postalCode})   
+                rows.append({"uid": uid, "addressUid": addressUid, "city": city, "country": country, "address1": address1, "address2": address2, "address3": address3, "postalCode": postalCode, "stateOrProvince": stateOrProvince})   
     
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    return(print(df_base))
+    return(df_base)
 
-buildAddressList()
+def buildIdList():
+    root = parseXml()
+
+    df_base_cols = ["uid", "idUid", "idType", "idNumber", "idCountry", "issueDate", "expirationDate"]
+    rows = []
+
+    for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
+        
+        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor.find('{http://tempuri.org/sdnList.xsd}uid') is not None else None
+
+        for actor in actor.findall('{http://tempuri.org/sdnList.xsd}idList'):
+            for address in actor.findall('{http://tempuri.org/sdnList.xsd}id'):
+                idUid = address.find('{http://tempuri.org/sdnList.xsd}uid').text if address.find('{http://tempuri.org/sdnList.xsd}uid') is not None else None
+                idNumber = address.find('{http://tempuri.org/sdnList.xsd}idNumber').text if address.find('{http://tempuri.org/sdnList.xsd}idNumber') is not None else None
+                idCountry = address.find('{http://tempuri.org/sdnList.xsd}idCountry').text if address.find('{http://tempuri.org/sdnList.xsd}idCountry') is not None else None
+                idType = address.find('{http://tempuri.org/sdnList.xsd}idType').text if address.find('{http://tempuri.org/sdnList.xsd}idType') is not None else None
+                issueDate = address.find('{http://tempuri.org/sdnList.xsd}issueDate').text if address.find('{http://tempuri.org/sdnList.xsd}issueDate') is not None else None
+                expirationDate = address.find('{http://tempuri.org/sdnList.xsd}expirationDate').text if address.find('{http://tempuri.org/sdnList.xsd}expirationDate') is not None else None
+
+                rows.append({"uid": uid, "idUid": idUid, "idNumber": idNumber, "idCountry": idCountry, "idType": idType, "issueDate": issueDate, "expirationDate": expirationDate})   
+              
+    df_base = pd.DataFrame(rows, columns = df_base_cols)
+    return(df_base)
+
+
+buildIdList()
