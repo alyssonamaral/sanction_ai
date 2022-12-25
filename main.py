@@ -15,6 +15,21 @@ def parseXml():
     root = tree.getroot()
     return root
 
+def buildPublshInformation():
+    root = parseXml()
+ 
+    df_base_cols = ["Publish_Date", "Record_Count"]
+    rows = []
+
+    for actor in root.findall('{http://tempuri.org/sdnList.xsd}publshInformation'):
+        Publish_Date = actor.find('{http://tempuri.org/sdnList.xsd}Publish_Date').text if actor.find('{http://tempuri.org/sdnList.xsd}Publish_Date') is not None else None
+        Record_Count = actor.find('{http://tempuri.org/sdnList.xsd}Record_Count').text if actor.find('{http://tempuri.org/sdnList.xsd}Record_Count') is not None else None
+        
+        rows.append({"Publish_Date": Publish_Date, "Record_Count": Record_Count})
+    
+    df_base = pd.DataFrame(rows, columns = df_base_cols)
+    return (df_base)
+
 def buildMainDf():
     root = parseXml()
  
@@ -209,39 +224,60 @@ def buildVesselInfo():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     return(df_base)
 
-def searchPatterns():
+def buildCitizenshipList():
     root = parseXml()
-    df_base_cols = ["tag"]
+
+    df_base_cols = ["uid", "citizenshipId", "country", "mainEntry"]
     rows = []
 
-    # for child in root:
-    #     for child in child:
-    #         rows.append({"tag": child.tag})  
-
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
-        for actor in actor.findall('{http://tempuri.org/sdnList.xsd}placeOfBirthList'):
-            for address in actor.findall('{http://tempuri.org/sdnList.xsd}placeOfBirthItem'):
-                rows.append({"tag": address.tag})
+        
+        uid = actor.find('{http://tempuri.org/sdnList.xsd}uid').text if actor.find('{http://tempuri.org/sdnList.xsd}uid') is not None else None
 
-# ['{http://tempuri.org/sdnList.xsd}Publish_Date'
-#  '{http://tempuri.org/sdnList.xsd}Record_Count'
-#  '{http://tempuri.org/sdnList.xsd}uid'
-#  '{http://tempuri.org/sdnList.xsd}lastName'
-#  '{http://tempuri.org/sdnList.xsd}sdnType'
-#  '{http://tempuri.org/sdnList.xsd}programList'
-#  '{http://tempuri.org/sdnList.xsd}akaList'
-#  '{http://tempuri.org/sdnList.xsd}addressList'
-#  '{http://tempuri.org/sdnList.xsd}idList'
-#  '{http://tempuri.org/sdnList.xsd}firstName'
-#  '{http://tempuri.org/sdnList.xsd}title'
-#  '{http://tempuri.org/sdnList.xsd}dateOfBirthList'
-#  '{http://tempuri.org/sdnList.xsd}placeOfBirthList'
-#  '{http://tempuri.org/sdnList.xsd}nationalityList'
-#  '{http://tempuri.org/sdnList.xsd}remarks'
-#  '{http://tempuri.org/sdnList.xsd}vesselInfo'
-#  '{http://tempuri.org/sdnList.xsd}citizenshipList']
+        for actor in actor.findall('{http://tempuri.org/sdnList.xsd}citizenshipList'):
+            for address in actor.findall('{http://tempuri.org/sdnList.xsd}citizenship'):
+                citizenshipId = address.find('{http://tempuri.org/sdnList.xsd}uid').text if address.find('{http://tempuri.org/sdnList.xsd}uid') is not None else None
+                country = address.find('{http://tempuri.org/sdnList.xsd}country').text if address.find('{http://tempuri.org/sdnList.xsd}country') is not None else None
+                mainEntry = address.find('{http://tempuri.org/sdnList.xsd}mainEntry').text if address.find('{http://tempuri.org/sdnList.xsd}mainEntry') is not None else None
 
+                rows.append({"uid": uid, "citizenshipId": citizenshipId, "country": country, "mainEntry": mainEntry})   
+    
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    return(print(df_base['tag'].unique()))
+    return(df_base)
 
-buildVesselInfo()
+# def searchPatterns():
+#     root = parseXml()
+#     df_base_cols = ["tag"]
+#     rows = []
+
+#     # for child in root:
+#     #     for child in child:
+#     #         rows.append({"tag": child.tag})  
+
+#     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
+#         for actor in actor.findall('{http://tempuri.org/sdnList.xsd}placeOfBirthList'):
+#             for address in actor.findall('{http://tempuri.org/sdnList.xsd}placeOfBirthItem'):
+#                 rows.append({"tag": address.tag})
+
+# # ['{http://tempuri.org/sdnList.xsd}Publish_Date'
+# #  '{http://tempuri.org/sdnList.xsd}Record_Count'
+# #  '{http://tempuri.org/sdnList.xsd}uid'
+# #  '{http://tempuri.org/sdnList.xsd}lastName'
+# #  '{http://tempuri.org/sdnList.xsd}sdnType'
+# #  '{http://tempuri.org/sdnList.xsd}programList'
+# #  '{http://tempuri.org/sdnList.xsd}akaList'
+# #  '{http://tempuri.org/sdnList.xsd}addressList'
+# #  '{http://tempuri.org/sdnList.xsd}idList'
+# #  '{http://tempuri.org/sdnList.xsd}firstName'
+# #  '{http://tempuri.org/sdnList.xsd}title'
+# #  '{http://tempuri.org/sdnList.xsd}dateOfBirthList'
+# #  '{http://tempuri.org/sdnList.xsd}placeOfBirthList'
+# #  '{http://tempuri.org/sdnList.xsd}nationalityList'
+# #  '{http://tempuri.org/sdnList.xsd}remarks'
+# #  '{http://tempuri.org/sdnList.xsd}vesselInfo'
+# #  '{http://tempuri.org/sdnList.xsd}citizenshipList']
+
+#     df_base = pd.DataFrame(rows, columns = df_base_cols)
+#     return(print(df_base['tag'].unique()))
+
+buildPublshInformation()
