@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as et 
 import requests
 import pandas as pd
-
+from connection import insertDf 
 
 def loadXML():
     url = 'https://www.treasury.gov/ofac/downloads/sdn.xml'
@@ -27,7 +27,12 @@ def buildPublshInformation():
         
         rows.append({"Publish_Date": Publish_Date, "Record_Count": Record_Count})
     
+    table_name = 'publish_information'
     df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['Record_Count'] = pd.to_numeric(df_base['Record_Count'])
+   
+    insertDf(df_base)
+    
     return (df_base)
 
 def buildMainDf():
@@ -244,40 +249,5 @@ def buildCitizenshipList():
     
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     return(df_base)
-
-# def searchPatterns():
-#     root = parseXml()
-#     df_base_cols = ["tag"]
-#     rows = []
-
-#     # for child in root:
-#     #     for child in child:
-#     #         rows.append({"tag": child.tag})  
-
-#     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
-#         for actor in actor.findall('{http://tempuri.org/sdnList.xsd}placeOfBirthList'):
-#             for address in actor.findall('{http://tempuri.org/sdnList.xsd}placeOfBirthItem'):
-#                 rows.append({"tag": address.tag})
-
-# # ['{http://tempuri.org/sdnList.xsd}Publish_Date'
-# #  '{http://tempuri.org/sdnList.xsd}Record_Count'
-# #  '{http://tempuri.org/sdnList.xsd}uid'
-# #  '{http://tempuri.org/sdnList.xsd}lastName'
-# #  '{http://tempuri.org/sdnList.xsd}sdnType'
-# #  '{http://tempuri.org/sdnList.xsd}programList'
-# #  '{http://tempuri.org/sdnList.xsd}akaList'
-# #  '{http://tempuri.org/sdnList.xsd}addressList'
-# #  '{http://tempuri.org/sdnList.xsd}idList'
-# #  '{http://tempuri.org/sdnList.xsd}firstName'
-# #  '{http://tempuri.org/sdnList.xsd}title'
-# #  '{http://tempuri.org/sdnList.xsd}dateOfBirthList'
-# #  '{http://tempuri.org/sdnList.xsd}placeOfBirthList'
-# #  '{http://tempuri.org/sdnList.xsd}nationalityList'
-# #  '{http://tempuri.org/sdnList.xsd}remarks'
-# #  '{http://tempuri.org/sdnList.xsd}vesselInfo'
-# #  '{http://tempuri.org/sdnList.xsd}citizenshipList']
-
-#     df_base = pd.DataFrame(rows, columns = df_base_cols)
-#     return(print(df_base['tag'].unique()))
 
 buildPublshInformation()
