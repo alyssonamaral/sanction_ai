@@ -18,20 +18,20 @@ def parseXml():
 def buildPublshInformation():
     root = parseXml()
  
-    df_base_cols = ["Publish_Date", "Record_Count"]
+    df_base_cols = ["publish_date", "record_count"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}publshInformation'):
         Publish_Date = actor.find('{http://tempuri.org/sdnList.xsd}Publish_Date').text if actor.find('{http://tempuri.org/sdnList.xsd}Publish_Date') is not None else None
         Record_Count = actor.find('{http://tempuri.org/sdnList.xsd}Record_Count').text if actor.find('{http://tempuri.org/sdnList.xsd}Record_Count') is not None else None
         
-        rows.append({"Publish_Date": Publish_Date, "Record_Count": Record_Count})
+        rows.append({"publish_date": Publish_Date, "record_count": Record_Count})
     
     table_name = 'publish_information'
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    df_base['Record_Count'] = pd.to_numeric(df_base['Record_Count'])
+    df_base['record_count'] = pd.to_numeric(df_base['record_count'])
    
-    insertDf(df_base)
+    insertDf(df_base, table_name, df_base_cols)
     
     return (df_base)
 
@@ -52,7 +52,7 @@ def buildMainDf():
         rows.append({"uid": uid, "lastName": lastName, "firstName": firstName, "title": title, "sdnType": sdnType, "remarks": remarks})
     
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    return (df_base)
+    return (print(df_base))
 
 def buildProgramList():
     root = parseXml()
@@ -117,7 +117,7 @@ def buildAddressList():
                 rows.append({"uid": uid, "addressUid": addressUid, "city": city, "country": country, "address1": address1, "address2": address2, "address3": address3, "postalCode": postalCode, "stateOrProvince": stateOrProvince})   
     
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    return(df_base)
+    return(print(df_base))
 
 def buildIdList():
     root = parseXml()

@@ -34,14 +34,21 @@ def single_insert(conn, insert_req):
         return 1
     cursor.close()
 
-def insertDf(df_base):
+def insertDf(df_base, table_name, df_base_cols):
+    
+    df_base_cols_list = ', '.join(df_base_cols)
+
     # Connecting to the database
     conn = connect(param_dic)
     # Inserting each row
     for i in df_base.index:
-        query = """
-        INSERT into publish_information (publish_date, record_count) values('%s', %s);
-        """ % (df_base['Publish_Date'][i], df_base['Record_Count'][i])
+        tableColumnsValues = []
+        tableColumnsValues.append(df_base.values[i].tolist())   
+        tableColumnsValues = ', '.join(map(str, tableColumnsValues[i]))   #NEED TO TAKE THE DATE IN STRING
+        print(tableColumnsValues)
+  
+        query = f'INSERT into {table_name} ({df_base_cols_list}) values({tableColumnsValues});'
+     
         single_insert(conn, query)
     # Close the connection
     conn.close
