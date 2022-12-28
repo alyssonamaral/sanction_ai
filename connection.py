@@ -1,4 +1,5 @@
 import psycopg2
+import psycopg2.extras as extras
 import sys
 
 param_dic = {
@@ -34,21 +35,21 @@ def single_insert(conn, insert_req):
         return 1
     cursor.close()
 
-def insertDf(df_base, table_name, df_base_cols):
-    
-    df_base_cols_list = ', '.join(df_base_cols)
-
-    # Connecting to the database
+def insertDf(df_base, table_name):
     conn = connect(param_dic)
-    # Inserting each row
-    for i in df_base.index:
-        tableColumnsValues = []
-        tableColumnsValues.append(df_base.values[i].tolist())   
-        tableColumnsValues = ', '.join(map(str, tableColumnsValues[i]))   #NEED TO TAKE THE DATE IN STRING
-        print(tableColumnsValues)
+    tuples = [tuple(x) for x in df_base.to_numpy()]
   
-        query = f'INSERT into {table_name} ({df_base_cols_list}) values({tableColumnsValues});'
-     
-        single_insert(conn, query)
-    # Close the connection
-    conn.close
+    cols = ','.join(list(df_base.columns))
+    # SQL query to execute
+    query = "INSERT INTO %s(%s) VALUES %%s" % (table_name, cols)
+    cursor = conn.cursor()
+    try:
+        extras.execute_values(cursor, query, tuples)
+        conn.commit()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error: %s" % error)
+        conn.rollback()
+        cursor.close()
+        return 1
+    print("The dataframe is inserted")
+    cursor.close()

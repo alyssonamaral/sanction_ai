@@ -30,8 +30,7 @@ def buildPublshInformation():
     table_name = 'publish_information'
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['record_count'] = pd.to_numeric(df_base['record_count'])
-   
-    insertDf(df_base, table_name, df_base_cols)
+    insertDf(df_base, table_name)
     
     return (df_base)
 
@@ -51,8 +50,12 @@ def buildMainDf():
 
         rows.append({"uid": uid, "lastName": lastName, "firstName": firstName, "title": title, "sdnType": sdnType, "remarks": remarks})
     
+    table_name = 'main_df'
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    return (print(df_base))
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    insertDf(df_base, table_name)
+
+    return (df_base)
 
 def buildProgramList():
     root = parseXml()
@@ -68,13 +71,17 @@ def buildProgramList():
             program = actor.find('{http://tempuri.org/sdnList.xsd}program').text if actor.find('{http://tempuri.org/sdnList.xsd}program') is not None else None
             rows.append({"uid": uid, "program": program})
    
+    table_name = 'program_list'   
     df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    insertDf(df_base, table_name)
+
     return(df_base)
 
 def buildAkaList():
     root = parseXml()
  
-    df_base_cols = ["uid", "akaUid", "type", "category", "lastName"]
+    df_base_cols = ["akaUid", "uid", "type", "category", "lastName"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
@@ -88,15 +95,19 @@ def buildAkaList():
                 category = aka.find('{http://tempuri.org/sdnList.xsd}category').text if aka.find('{http://tempuri.org/sdnList.xsd}category') is not None else None
                 lastName = aka.find('{http://tempuri.org/sdnList.xsd}lastName').text if aka.find('{http://tempuri.org/sdnList.xsd}lastName') is not None else None
 
-                rows.append({"uid": uid, "akaUid": akaUid, "type": type, "category": category, "lastName": lastName})   
+                rows.append({"akaUid": akaUid, "uid": uid, "type": type, "category": category, "lastName": lastName})   
     
+    table_name = 'aka_list'   
     df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['akaUid'] = pd.to_numeric(df_base['akaUid'])
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    insertDf(df_base, table_name)
     return(df_base)
 
 def buildAddressList():
     root = parseXml()
  
-    df_base_cols = ["uid", "addressUid", "city", "country", "address1", "address2", "address3", "postalCode", "stateOrProvince"]
+    df_base_cols = ["addressUid", "uid", "city", "country", "address1", "address2", "address3", "postalCode", "stateOrProvince"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
@@ -114,10 +125,14 @@ def buildAddressList():
                 postalCode = address.find('{http://tempuri.org/sdnList.xsd}postalCode').text if address.find('{http://tempuri.org/sdnList.xsd}postalCode') is not None else None
                 stateOrProvince = address.find('{http://tempuri.org/sdnList.xsd}stateOrProvince').text if address.find('{http://tempuri.org/sdnList.xsd}stateOrProvince') is not None else None
 
-                rows.append({"uid": uid, "addressUid": addressUid, "city": city, "country": country, "address1": address1, "address2": address2, "address3": address3, "postalCode": postalCode, "stateOrProvince": stateOrProvince})   
+                rows.append({"addressUid": addressUid, "uid": uid, "city": city, "country": country, "address1": address1, "address2": address2, "address3": address3, "postalCode": postalCode, "stateOrProvince": stateOrProvince})   
     
+    table_name = 'address_list'   
     df_base = pd.DataFrame(rows, columns = df_base_cols)
-    return(print(df_base))
+    df_base['addressUid'] = pd.to_numeric(df_base['addressUid'])
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    insertDf(df_base, table_name)
+    return(df_base)
 
 def buildIdList():
     root = parseXml()
@@ -250,4 +265,4 @@ def buildCitizenshipList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     return(df_base)
 
-buildPublshInformation()
+buildAddressList()
