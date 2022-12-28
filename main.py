@@ -137,7 +137,7 @@ def buildAddressList():
 def buildIdList():
     root = parseXml()
 
-    df_base_cols = ["uid", "idUid", "idType", "idNumber", "idCountry", "issueDate", "expirationDate"]
+    df_base_cols = ["idUid", "uid", "idType", "idNumber", "idCountry", "issueDate", "expirationDate"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
@@ -153,15 +153,19 @@ def buildIdList():
                 issueDate = address.find('{http://tempuri.org/sdnList.xsd}issueDate').text if address.find('{http://tempuri.org/sdnList.xsd}issueDate') is not None else None
                 expirationDate = address.find('{http://tempuri.org/sdnList.xsd}expirationDate').text if address.find('{http://tempuri.org/sdnList.xsd}expirationDate') is not None else None
 
-                rows.append({"uid": uid, "idUid": idUid, "idNumber": idNumber, "idCountry": idCountry, "idType": idType, "issueDate": issueDate, "expirationDate": expirationDate})   
-              
+                rows.append({"idUid": idUid, "uid": uid, "idNumber": idNumber, "idCountry": idCountry, "idType": idType, "issueDate": issueDate, "expirationDate": expirationDate})   
+
+    table_name = 'id_list'           
     df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['idUid'] = pd.to_numeric(df_base['idUid'])
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    insertDf(df_base, table_name)
     return(df_base)
 
 def buildNationalityList():
     root = parseXml()
 
-    df_base_cols = ["uid", "nationalityId", "country", "mainEntry"]
+    df_base_cols = ["nationalityId", "uid", "country", "mainEntry"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
@@ -174,15 +178,20 @@ def buildNationalityList():
                 country = address.find('{http://tempuri.org/sdnList.xsd}country').text if address.find('{http://tempuri.org/sdnList.xsd}country') is not None else None
                 mainEntry = address.find('{http://tempuri.org/sdnList.xsd}mainEntry').text if address.find('{http://tempuri.org/sdnList.xsd}mainEntry') is not None else None
 
-                rows.append({"uid": uid, "nationalityId": nationalityId, "country": country, "mainEntry": mainEntry})   
+                rows.append({"nationalityId": nationalityId, "uid": uid, "country": country, "mainEntry": mainEntry})   
     
+    table_name = 'nationality_list'           
     df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['nationalityId'] = pd.to_numeric(df_base['nationalityId'])
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    insertDf(df_base, table_name) 
+
     return(df_base)
 
 def buildDateOfBirthList():
     root = parseXml()
 
-    df_base_cols = ["uid", "dateOfBirthId", "dateOfBirth", "mainEntry"]
+    df_base_cols = ["dateOfBirthId", "uid", "dateOfBirth", "mainEntry"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
@@ -195,15 +204,20 @@ def buildDateOfBirthList():
                 dateOfBirth = address.find('{http://tempuri.org/sdnList.xsd}dateOfBirth').text if address.find('{http://tempuri.org/sdnList.xsd}dateOfBirth') is not None else None
                 mainEntry = address.find('{http://tempuri.org/sdnList.xsd}mainEntry').text if address.find('{http://tempuri.org/sdnList.xsd}mainEntry') is not None else None
 
-                rows.append({"uid": uid, "dateOfBirthId": dateOfBirthId, "dateOfBirth": dateOfBirth, "mainEntry": mainEntry})   
+                rows.append({"dateOfBirthId": dateOfBirthId, "uid": uid, "dateOfBirth": dateOfBirth, "mainEntry": mainEntry})   
     
+    table_name = 'dateofbirth_list'           
     df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['dateOfBirthId'] = pd.to_numeric(df_base['dateOfBirthId'])
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    insertDf(df_base, table_name)       
+    
     return(df_base)
 
 def buildPlaceOfBirthList():
     root = parseXml()
 
-    df_base_cols = ["uid", "placeOfBirthId", "placeOfBirth", "mainEntry"]
+    df_base_cols = ["placeOfBirthId", "uid", "placeOfBirth", "mainEntry"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
@@ -216,9 +230,13 @@ def buildPlaceOfBirthList():
                 placeOfBirth = address.find('{http://tempuri.org/sdnList.xsd}placeOfBirth').text if address.find('{http://tempuri.org/sdnList.xsd}placeOfBirth') is not None else None
                 mainEntry = address.find('{http://tempuri.org/sdnList.xsd}mainEntry').text if address.find('{http://tempuri.org/sdnList.xsd}mainEntry') is not None else None
 
-                rows.append({"uid": uid, "placeOfBirthId": placeOfBirthId, "placeOfBirth": placeOfBirth, "mainEntry": mainEntry})   
+                rows.append({"placeOfBirthId": placeOfBirthId, "uid": uid, "placeOfBirth": placeOfBirth, "mainEntry": mainEntry})   
     
+    table_name = 'placeofbirth_list'           
     df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['placeOfBirthId'] = pd.to_numeric(df_base['placeOfBirthId'])
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    insertDf(df_base, table_name)   
     return(df_base)
 
 def buildVesselInfo():
@@ -241,13 +259,16 @@ def buildVesselInfo():
 
             rows.append({"uid": uid, "callSign": callSign, "vesselType": vesselType, "vesselFlag": vesselFlag, "vesselOwner": vesselOwner, "tonnage": tonnage, "grossRegisteredTonnage": grossRegisteredTonnage})   
     
+    table_name = 'vessel_info'           
     df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    insertDf(df_base, table_name)
     return(df_base)
 
 def buildCitizenshipList():
     root = parseXml()
 
-    df_base_cols = ["uid", "citizenshipId", "country", "mainEntry"]
+    df_base_cols = ["citizenshipId", "uid", "country", "mainEntry"]
     rows = []
 
     for actor in root.findall('{http://tempuri.org/sdnList.xsd}sdnEntry'):
@@ -260,9 +281,11 @@ def buildCitizenshipList():
                 country = address.find('{http://tempuri.org/sdnList.xsd}country').text if address.find('{http://tempuri.org/sdnList.xsd}country') is not None else None
                 mainEntry = address.find('{http://tempuri.org/sdnList.xsd}mainEntry').text if address.find('{http://tempuri.org/sdnList.xsd}mainEntry') is not None else None
 
-                rows.append({"uid": uid, "citizenshipId": citizenshipId, "country": country, "mainEntry": mainEntry})   
+                rows.append({"citizenshipId": citizenshipId, "uid": uid, "country": country, "mainEntry": mainEntry})   
     
+    table_name = 'citizenship_list'           
     df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['uid'] = pd.to_numeric(df_base['uid'])
+    df_base['citizenshipId'] = pd.to_numeric(df_base['citizenshipId'])
+    insertDf(df_base, table_name)
     return(df_base)
-
-buildAddressList()
