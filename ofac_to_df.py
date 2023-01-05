@@ -30,7 +30,7 @@ def buildPublshInformation():
     table_name = 'publish_information'
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['record_count'] = pd.to_numeric(df_base['record_count'])
-    insertDf(df_base, table_name)
+    # insertDf(df_base, table_name)
     
     return (df_base)
 
@@ -53,7 +53,7 @@ def buildMainDf():
     table_name = 'main_df'
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    insertDf(df_base, table_name)
+    # insertDf(df_base, table_name)
 
     return (df_base)
 
@@ -74,7 +74,7 @@ def buildProgramList():
     table_name = 'program_list'   
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    insertDf(df_base, table_name)
+    # insertDf(df_base, table_name)
 
     return(df_base)
 
@@ -101,7 +101,7 @@ def buildAkaList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['akaUid'] = pd.to_numeric(df_base['akaUid'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    insertDf(df_base, table_name)
+    # insertDf(df_base, table_name)
     return(df_base)
 
 def buildAddressList():
@@ -131,7 +131,7 @@ def buildAddressList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['addressUid'] = pd.to_numeric(df_base['addressUid'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    insertDf(df_base, table_name)
+    # insertDf(df_base, table_name)
     return(df_base)
 
 def buildIdList():
@@ -159,7 +159,7 @@ def buildIdList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['idUid'] = pd.to_numeric(df_base['idUid'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    insertDf(df_base, table_name)
+    # insertDf(df_base, table_name)
     return(df_base)
 
 def buildNationalityList():
@@ -184,7 +184,7 @@ def buildNationalityList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['nationalityId'] = pd.to_numeric(df_base['nationalityId'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    insertDf(df_base, table_name) 
+    # insertDf(df_base, table_name) 
 
     return(df_base)
 
@@ -210,7 +210,7 @@ def buildDateOfBirthList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['dateOfBirthId'] = pd.to_numeric(df_base['dateOfBirthId'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    insertDf(df_base, table_name)       
+    # insertDf(df_base, table_name)       
     
     return(df_base)
 
@@ -236,7 +236,7 @@ def buildPlaceOfBirthList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['placeOfBirthId'] = pd.to_numeric(df_base['placeOfBirthId'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    insertDf(df_base, table_name)   
+    # insertDf(df_base, table_name)   
     return(df_base)
 
 def buildVesselInfo():
@@ -262,7 +262,7 @@ def buildVesselInfo():
     table_name = 'vessel_info'           
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    insertDf(df_base, table_name)
+    # insertDf(df_base, table_name)
     return(df_base)
 
 def buildCitizenshipList():
@@ -287,5 +287,5 @@ def buildCitizenshipList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['uid'] = pd.to_numeric(df_base['uid'])
     df_base['citizenshipId'] = pd.to_numeric(df_base['citizenshipId'])
-    insertDf(df_base, table_name)
+    # insertDf(df_base, table_name)
     return(df_base)
