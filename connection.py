@@ -6,7 +6,7 @@ param_dic = {
     "host"      : "localhost",
     "database"  : "postgres",
     "user"      : "postgres",
-    "password"  : "D1o3a0397!"
+    "password"  : "*********"
 }
 
 def connect(params_dic):
