@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as et 
 import requests
 import pandas as pd
-from connection import insertDf 
+from connection import insertDf, connect, param_dic
 
 def loadXML():
     url = 'https://www.treasury.gov/ofac/downloads/sdn.xml'
@@ -31,6 +31,13 @@ def publshInformation():
     df_base['record_count'] = pd.to_numeric(df_base['record_count'])
     
     return (df_base)
+
+def truncateTables():
+    conn = connect(param_dic)
+    cursor = conn.cursor()
+    query = "truncate table address_list, aka_list, citizenship_list, dateofbirth_list, id_list, main_info, nationality_list, placeofbirth_list, program_list, vessel_info;"
+    cursor.execute(query)  
+    return 
 
 def buildPublshInformation():
     root = parseXml()
