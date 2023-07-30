@@ -15,9 +15,26 @@ def parseXml():
     root = tree.getroot()
     return root
 
-def buildPublshInformation():
+def publshInformation():
     root = parseXml()
  
+    df_base_cols = ["publish_date", "record_count"]
+    rows = []
+
+    for actor in root.findall('{http://tempuri.org/sdnList.xsd}publshInformation'):
+        Publish_Date = actor.find('{http://tempuri.org/sdnList.xsd}Publish_Date').text if actor.find('{http://tempuri.org/sdnList.xsd}Publish_Date') is not None else None
+        Record_Count = actor.find('{http://tempuri.org/sdnList.xsd}Record_Count').text if actor.find('{http://tempuri.org/sdnList.xsd}Record_Count') is not None else None
+        
+        rows.append({"publish_date": Publish_Date, "record_count": Record_Count})
+
+    df_base = pd.DataFrame(rows, columns = df_base_cols)
+    df_base['record_count'] = pd.to_numeric(df_base['record_count'])
+    
+    return (df_base)
+
+def buildPublshInformation():
+    root = parseXml()
+    print('buildPublshInformation')
     df_base_cols = ["publish_date", "record_count"]
     rows = []
 
@@ -30,13 +47,14 @@ def buildPublshInformation():
     table_name = 'publish_information'
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['record_count'] = pd.to_numeric(df_base['record_count'])
-    # insertDf(df_base, table_name)
+    insertDf(df_base, table_name)
     
     return (df_base)
 
 def buildMainDf():
     root = parseXml()
- 
+    print('buildMainDf')
+
     df_base_cols = ["uid", "lastName", "sdnType", "firstName", "title", "remarks"]
     rows = []
 
@@ -50,15 +68,16 @@ def buildMainDf():
 
         rows.append({"uid": uid, "lastName": lastName, "firstName": firstName, "title": title, "sdnType": sdnType, "remarks": remarks})
     
-    table_name = 'main_df'
+    table_name = 'main_info'
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    # insertDf(df_base, table_name)
+    insertDf(df_base, table_name)
 
     return (df_base)
 
 def buildProgramList():
     root = parseXml()
+    print('buildProgramList')
  
     df_base_cols = ["uid", "program"]
     rows = []
@@ -74,13 +93,14 @@ def buildProgramList():
     table_name = 'program_list'   
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    # insertDf(df_base, table_name)
+    insertDf(df_base, table_name)
 
     return(df_base)
 
 def buildAkaList():
     root = parseXml()
- 
+    print('buildAkaList')
+
     df_base_cols = ["akaUid", "uid", "type", "category", "lastName"]
     rows = []
 
@@ -101,12 +121,13 @@ def buildAkaList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['akaUid'] = pd.to_numeric(df_base['akaUid'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    # insertDf(df_base, table_name)
+    insertDf(df_base, table_name)
     return(df_base)
 
 def buildAddressList():
     root = parseXml()
- 
+    print('buildAddressList')
+
     df_base_cols = ["addressUid", "uid", "city", "country", "address1", "address2", "address3", "postalCode", "stateOrProvince"]
     rows = []
 
@@ -131,11 +152,12 @@ def buildAddressList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['addressUid'] = pd.to_numeric(df_base['addressUid'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    # insertDf(df_base, table_name)
+    insertDf(df_base, table_name)
     return(df_base)
 
 def buildIdList():
     root = parseXml()
+    print('buildIdList')
 
     df_base_cols = ["idUid", "uid", "idType", "idNumber", "idCountry", "issueDate", "expirationDate"]
     rows = []
@@ -159,11 +181,12 @@ def buildIdList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['idUid'] = pd.to_numeric(df_base['idUid'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    # insertDf(df_base, table_name)
+    insertDf(df_base, table_name)
     return(df_base)
 
 def buildNationalityList():
     root = parseXml()
+    print('buildNationalityList')
 
     df_base_cols = ["nationalityId", "uid", "country", "mainEntry"]
     rows = []
@@ -184,12 +207,13 @@ def buildNationalityList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['nationalityId'] = pd.to_numeric(df_base['nationalityId'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    # insertDf(df_base, table_name) 
+    insertDf(df_base, table_name) 
 
     return(df_base)
 
 def buildDateOfBirthList():
     root = parseXml()
+    print('buildDateOfBirthList')
 
     df_base_cols = ["dateOfBirthId", "uid", "dateOfBirth", "mainEntry"]
     rows = []
@@ -210,12 +234,13 @@ def buildDateOfBirthList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['dateOfBirthId'] = pd.to_numeric(df_base['dateOfBirthId'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    # insertDf(df_base, table_name)       
+    insertDf(df_base, table_name)       
     
     return(df_base)
 
 def buildPlaceOfBirthList():
     root = parseXml()
+    print('buildPlaceOfBirthList')
 
     df_base_cols = ["placeOfBirthId", "uid", "placeOfBirth", "mainEntry"]
     rows = []
@@ -236,11 +261,12 @@ def buildPlaceOfBirthList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['placeOfBirthId'] = pd.to_numeric(df_base['placeOfBirthId'])
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    # insertDf(df_base, table_name)   
+    insertDf(df_base, table_name)   
     return(df_base)
 
 def buildVesselInfo():
     root = parseXml()
+    print('buildVesselInfo')
 
     df_base_cols = ["uid", "callSign", "vesselType", "vesselFlag", "vesselOwner", "tonnage", "grossRegisteredTonnage"]
     rows = []
@@ -262,11 +288,12 @@ def buildVesselInfo():
     table_name = 'vessel_info'           
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['uid'] = pd.to_numeric(df_base['uid'])
-    # insertDf(df_base, table_name)
+    insertDf(df_base, table_name)
     return(df_base)
 
 def buildCitizenshipList():
     root = parseXml()
+    print('buildCitizenshipList')
 
     df_base_cols = ["citizenshipId", "uid", "country", "mainEntry"]
     rows = []
@@ -287,5 +314,5 @@ def buildCitizenshipList():
     df_base = pd.DataFrame(rows, columns = df_base_cols)
     df_base['uid'] = pd.to_numeric(df_base['uid'])
     df_base['citizenshipId'] = pd.to_numeric(df_base['citizenshipId'])
-    # insertDf(df_base, table_name)
+    insertDf(df_base, table_name)
     return(df_base)

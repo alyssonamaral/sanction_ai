@@ -1,24 +1,42 @@
 import ofac_to_df as ofac
-import numpy as np
-from flask import Flask, jsonify, request
+from connection import connect, param_dic
+import datetime
+import pandas as pd
 
-app = Flask(__name__)
+ofac.loadXML()
 
-@app.route('/search_ofac',methods=['GET'])
-def search_ofac():
-    payload = request.get_json()
+conn = connect(param_dic)
+cursor = conn.cursor()
+query = "select publish_date, record_count from public.publish_information"
+cursor.execute(query)
+results = cursor.fetchall()
+cursor.close()
+conn.close()
+df_publish = pd.DataFrame(results)
+df_publish.columns = ['publish_date', 'record_count']
+publish_information = ofac.publshInformation()
+publish_information['publish_date'] = pd.to_datetime(publish_information['publish_date'], format='%m/%d/%Y').dt.strftime('%Y-%m-%d')
 
-    name = payload.get('Name')
-    lastName = name.split()[-1].upper()
-    firstName = ' '.join(name.split()[:-1])
-
-    df = ofac.buildMainDf()
-
-    rows = df[(df['firstName'] == firstName) & (df['lastName'] == lastName)] #tenho que verificar se há outras combinacoes de nome e fazer uma decision tree
-
-    print (rows)
-
-    return 'Aopa'
-
-
-app.run(port=5000,host='localhost',debug=True)
+if publish_information['publish_date'][0] == df_publish['publish_date'][0] and publish_information['record_count'][0] == df_publish['record_count'][0]:
+    print('There was no updates in the OFAC')
+else:
+    try:
+        start = datetime.datetime.now()
+        ofac.buildPublshInformation()
+        ofac.buildMainDf()
+        ofac.buildProgramList()
+        ofac.buildAkaList()
+        ofac.buildAddressList()
+        ofac.buildIdList()
+        ofac.buildNationalityList()
+        ofac.buildDateOfBirthList()
+        ofac.buildPlaceOfBirthList()
+        ofac.buildVesselInfo()
+        ofac.buildCitizenshipList()
+        end = datetime.datetime.now()
+        print(f'Runtime: {end - start}')
+    except Exception as e:
+        if hasattr(e, 'message'):
+            print(e.message)
+        else:
+            print(e)

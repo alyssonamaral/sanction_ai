@@ -3,17 +3,15 @@ import psycopg2.extras as extras
 import sys
 
 param_dic = {
-    "host"      : "localhost",
-    "database"  : "postgres",
-    "user"      : "postgres",
-    "password"  : "*********"
+    "host"      : "ofac-db.cbgdt0gpf0f7.us-east-2.rds.amazonaws.com",
+    "database"  : "ofac_db",
+    "user"      : "alyssonamaral",
+    "password"  : "8yXuk!wRbt3f8W"
 }
 
 def connect(params_dic):
-    """ Connect to the PostgreSQL database server """
     conn = None
     try:
-        # connect to the PostgreSQL server
         print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(**params_dic)
     except (Exception, psycopg2.DatabaseError) as error:
@@ -22,8 +20,7 @@ def connect(params_dic):
     return conn
 
 
-def single_insert(conn, insert_req):
-    """ Execute a single INSERT request """
+def single_insert(conn, insert_req): 
     cursor = conn.cursor()
     try:
         cursor.execute(insert_req)
@@ -37,10 +34,8 @@ def single_insert(conn, insert_req):
 
 def insertDf(df_base, table_name):
     conn = connect(param_dic)
-    tuples = [tuple(x) for x in df_base.to_numpy()]
-  
-    cols = ','.join(list(df_base.columns))
-    # SQL query to execute
+    tuples = [tuple(x) for x in df_base.to_numpy()] 
+    cols = ','.join(list(df_base.columns))    
     query = "INSERT INTO %s(%s) VALUES %%s" % (table_name, cols)
     cursor = conn.cursor()
     try:
